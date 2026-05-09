@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../domain/entities/app_user.dart';
-import '../domain/usecases/login_usecase.dart';
-import '../domain/usecases/logout_usecase.dart';
+import 'package:week5_testing_challenge/features/auth/domain/entities/app_user.dart';
+import 'package:week5_testing_challenge/features/auth/domain/usecases/login_usecase.dart';
+import 'package:week5_testing_challenge/features/auth/domain/usecases/logout_usecase.dart';
+
 
 // ─── Events ────────────────────────────────────────────────────────────────
 abstract class AuthEvent extends Equatable {
