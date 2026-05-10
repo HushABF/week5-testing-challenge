@@ -4,7 +4,6 @@ import 'package:week5_testing_challenge/features/auth/domain/entities/app_user.d
 import 'package:week5_testing_challenge/features/auth/domain/usecases/login_usecase.dart';
 import 'package:week5_testing_challenge/features/auth/domain/usecases/logout_usecase.dart';
 
-
 // ─── Events ────────────────────────────────────────────────────────────────
 abstract class AuthEvent extends Equatable {
   @override
