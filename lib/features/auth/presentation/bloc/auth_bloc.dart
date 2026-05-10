@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:week5_testing_challenge/features/auth/domain/entities/app_user.dart';
 import 'package:week5_testing_challenge/features/auth/domain/usecases/login_usecase.dart';
 import 'package:week5_testing_challenge/features/auth/domain/usecases/logout_usecase.dart';
@@ -77,17 +77,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  // BUG 2:
-  // The logout handler emits AuthUnauthenticated BEFORE calling logout.
-  // If the logout call throws an exception (e.g. network error), the user
-  // is already marked as unauthenticated in the UI even though their
-  // session is still alive on the backend.
-  // The correct order is: call logout first, then emit AuthUnauthenticated.
+  //FIXED BUG 2:
   Future<void> _onLogoutRequested(
     LogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthUnauthenticated());
     await _logoutUseCase.call();
+    emit(AuthUnauthenticated());
   }
 }

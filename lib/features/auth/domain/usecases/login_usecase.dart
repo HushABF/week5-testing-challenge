@@ -15,13 +15,15 @@ class LoginUseCase {
   final AuthRepository _repository;
   LoginUseCase(this._repository);
 
-  // BUG 1:
-  // This use case should throw a ValidationException when email or password
-  // is empty BEFORE making any repository call.
-  // Currently it skips validation and calls the repository regardless,
-  // which means an empty email gets sent to Firebase directly — causing
-  // a cryptic Firebase error instead of a clean validation message.
+// FIXED BUG 1
   Future<AppUser> call(String email, String password) async {
+    if (email.trim().isEmpty) {
+      throw ValidationException('email can not be empty');
+    }
+
+    if (password.trim().isEmpty) {
+      throw ValidationException('password can not be empty');
+    }
     return await _repository.login(email, password);
   }
 }
