@@ -30,4 +30,49 @@ void main() {
   });
 
   // Write your tests below this line
+
+// 1. Calling with valid text calls the repository exactly once with correct args
+  test(
+      'Calling with valid text calls the repository exactly once with correct args',
+      () async {
+    when(
+      () => mockRepository.sendMessage('1', 'test message', 'ahmed'),
+    ).thenAnswer((_) async {});
+
+    await sendMessageUseCase.call('1', 'test message', 'ahmed');
+
+    verify(
+      () => mockRepository.sendMessage('1', 'test message', 'ahmed'),
+    ).called(1);
+  });
+
+// 2. Calling with an empty string throws a MessageException
+//    AND the repository is never called
+
+  test(
+      'Calling with an empty string throws a MessageException AND the repository is never called',
+      () async {
+    await expectLater(
+        () async => await sendMessageUseCase.call('1', '', 'ahmed'),
+        throwsA(isA<MessageException>()));
+
+    verifyNever(
+      () => mockRepository.sendMessage(any(), any(), any()),
+    );
+  });
+
+// 3. Calling with whitespace-only text (e.g. '   ') throws a MessageException
+//    AND the repository is never called
+
+  test(
+      'Calling with whitespace-only text (e.g. "   ") throws a MessageException AND the repository is never called',
+      () async {
+    await expectLater(
+        () async => await sendMessageUseCase.call('1', '     ', 'ahmed'),
+        throwsA(isA<MessageException>()));
+
+    verifyNever(
+      () => mockRepository.sendMessage(any(), any(), any()),
+    );
+  });
 }
