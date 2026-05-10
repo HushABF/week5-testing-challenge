@@ -9,7 +9,8 @@ class SendMessageUseCase {
   final ChatRepository _repository;
   SendMessageUseCase(this._repository);
 
-  //FIXED BUG 3:
+  // FIX: Was allowing empty/whitespace messages to reach Firestore,
+  // creating empty chat bubbles that could never be deleted.
   Future<void> call(
       String productId, String text, String senderUsername) async {
     if (text.trim().isEmpty) {

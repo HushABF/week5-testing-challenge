@@ -15,7 +15,8 @@ class LoginUseCase {
   final AuthRepository _repository;
   LoginUseCase(this._repository);
 
-// FIXED BUG 1
+// FIX: Was missing input validation — empty credentials went straight to Firebase,
+  // causing cryptic backend errors instead of a clean user-facing validation message.
   Future<AppUser> call(String email, String password) async {
     if (email.trim().isEmpty) {
       throw ValidationException('email can not be empty');

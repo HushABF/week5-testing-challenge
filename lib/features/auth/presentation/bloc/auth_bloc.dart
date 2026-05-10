@@ -77,7 +77,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  //FIXED BUG 2:
+  // FIX: Was emitting AuthUnauthenticated before calling logout — if logout failed,
+  // the UI showed logged-out while the session was still alive on the backend.
   Future<void> _onLogoutRequested(
     LogoutRequested event,
     Emitter<AuthState> emit,
