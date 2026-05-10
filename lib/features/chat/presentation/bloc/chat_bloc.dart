@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:week5_testing_challenge/features/chat/domain/entities/message.dart';
 import 'package:week5_testing_challenge/features/chat/domain/usecases/send_message_usecase.dart';
 import 'package:week5_testing_challenge/features/chat/domain/usecases/watch_messages_usecase.dart';
-
 
 // ─── Events ────────────────────────────────────────────────────────────────
 abstract class ChatEvent extends Equatable {
