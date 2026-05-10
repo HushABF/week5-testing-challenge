@@ -38,4 +38,56 @@ void main() {
   });
 
   // Write your tests below this line
+
+// 1. Calling login with valid credentials returns an AppUser
+
+  test('Calling login with valid credentials returns an AppUser', () async {
+    when(
+      () => mockRepository.login('test@test.com', 'correct-password'),
+    ).thenAnswer(
+      (_) async => fakeUser,
+    );
+
+    final result = await loginUseCase.call('test@test.com', "correct-password");
+
+    verify(() => mockRepository.login('test@test.com', "correct-password"))
+        .called(1);
+
+    expect(result, fakeUser);
+  });
+
+// 2. Calling login with an empty email throws a ValidationException
+//    BEFORE the repository is ever called (verify mockRepo is never called)
+  test(
+      'Calling login with an empty email throws a ValidationException, BEFORE the repository is ever called ',
+      () async {
+    await expectLater(() => loginUseCase.call('', 'any-password'),
+        throwsA(isA<ValidationException>()));
+
+    verifyNever(() => mockRepository.login(any(), any()));
+  });
+
+// 3. Calling login with an empty password throws a ValidationException
+//    BEFORE the repository is ever called
+  test(
+      'Calling login with an empty password throws a ValidationException, BEFORE the repository is ever called ',
+      () async {
+    await expectLater(
+        () async => await loginUseCase.call('anyemail@gmail.com', ''),
+        throwsA(isA<ValidationException>()));
+
+    verifyNever(() => mockRepository.login(any(), any()));
+  });
+
+// 4. When the repository throws an AuthException, it propagates correctly
+  test(' When the repository throws an AuthException, it propagates correctly',
+      () async {
+    when(
+      () => mockRepository.login('email@gmail.com', 'password'),
+    ).thenThrow(AuthException('Wrong input'));
+
+    await expectLater(
+        () async => await loginUseCase.call('email@gmail.com', 'password'),
+        throwsA(isA<AuthException>()));
+  });
 }
