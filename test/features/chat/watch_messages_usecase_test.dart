@@ -32,4 +32,60 @@ void main() {
   });
 
   // Write your tests below this line
+
+// 1. Calling with productId 'product-42' passes exactly 'product-42'
+//    to the repository — NOT an empty string
+  test(
+      "Calling with productId 'product-42' passes exactly 'product-42' to the repository",
+      () {
+    when(
+      () => mockRepository.watchMessages('product-42'),
+    ).thenAnswer((_) => Stream.value(<Message>[]));
+
+    watchMessagesUseCase.call('product-42');
+
+    verify(() => mockRepository.watchMessages('product-42')).called(1);
+  });
+
+// 2. The stream returned by the use case is the same stream
+//    the repository returns (no transformation)
+
+  test(
+      'The stream returned by the use case is the same stream, the repository returns (no transformation)',
+      () async {
+    Stream<List<Message>> stream = Stream.value(<Message>[]);
+    when(
+      () => mockRepository.watchMessages('1'),
+    ).thenAnswer((_) => stream);
+
+    final result = watchMessagesUseCase.call('1');
+
+    expect(result, same(stream));
+  });
+
+// 3. Calling with two different productIds calls the repository
+//    with each respective id, not a shared hardcoded value
+
+  test(
+      'Calling with two different productIds calls the repository with each respective id, not a shared hardcoded value',
+      () async {
+    when(
+      () => mockRepository.watchMessages('1'),
+    ).thenAnswer((_) => Stream.value(<Message>[]));
+
+    when(
+      () => mockRepository.watchMessages('2'),
+    ).thenAnswer((_) => Stream.value(<Message>[]));
+
+    watchMessagesUseCase.call('1');
+    watchMessagesUseCase.call('2');
+
+    verify(
+      () => mockRepository.watchMessages('1'),
+    ).called(1);
+
+    verify(
+      () => mockRepository.watchMessages('2'),
+    ).called(1);
+  });
 }
